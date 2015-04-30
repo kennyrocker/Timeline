@@ -1,0 +1,190 @@
+/* RESET CSS */
+  html, body, div, span, applet, object, iframe,
+  h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+  a, abbr, acronym, address, big, cite, code,
+  del, dfn, em, img, ins, kbd, q, s, samp,
+  small, strike, strong, sub, sup, tt, var,
+  b, u, i, center,
+  dl, dt, dd, ol, ul, li,
+  fieldset, form, label, legend,
+  table, caption, tbody, tfoot, thead, tr, th, td,
+  article, aside, canvas, details, embed, 
+  figure, figcaption, footer, header, hgroup, 
+  menu, nav, output, ruby, section, summary,
+  time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+  }
+  /* HTML5 display-role reset for older browsers */
+  article, aside, details, figcaption, figure, 
+  footer, header, hgroup, menu, nav, section {
+    display: block;
+  }
+  body {
+    line-height: 1;
+  }
+  ol, ul {
+    list-style: none;
+  }
+  blockquote, q {
+    quotes: none;
+  }
+  blockquote:before, blockquote:after,
+  q:before, q:after {
+    content: '';
+    content: none;
+  }
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/*  Timeline CSS */
+body{
+  padding: 0;
+  margin: 0;
+}
+
+.content {
+  position: relative;
+  z-index: 10;
+  padding:0;
+  margin:0;
+  font-family: arial;
+}
+.stage {
+  position: relative;
+  top: 0px;
+  left: 0px;
+  
+}
+.stop {
+  position: relative;
+  clear:both;
+  
+}
+.left,.right,.mid {
+  position: relative;
+  z-index: 50;
+  float:left;
+
+}
+.left,.right {
+   width: calc(50% - 8px);
+   height: 100%;
+   background-color: #ccc;  
+}
+.mid{
+  width:16px;
+  height: 100%;
+  background-color: tranparent;
+}
+.even .left, .even .right {
+  background-color: #999;
+}
+.right .info {
+  position: fixed;
+  height: 60%;
+  width: 30%;
+  right: 10%;
+  top: 20%;
+  z-index:1350;
+  border-radius: 10px;
+  background-color: #333;
+  border: 5px dashed red;
+  opacity:1;
+  color: #fafafa;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+
+  padding: 20px;
+  display: none;
+}
+.info title {
+  display: block;
+  font-size: 24px;
+  padding-bottom: 10px;
+}
+.info article {
+  display: block;
+  line-height: 17px;
+  font-size: 14px;
+}
+.info article section {
+  padding-bottom: 5px;
+}
+
+
+
+.left .mark {
+  width: 35%;
+  position:relative;
+  border-bottom:5px dashed #fafafa;
+  float:right;
+  clear:both;
+}
+.mark .time {
+  position: absolute;
+  display: block;
+  left: -140px;
+  top: -40px;
+  color: #555;
+  color: #fafafa;
+  font-size:2rem;
+  font-size:32px;  
+  background-color: #333;
+  border: 5px dashed #076591;
+  border-radius: 10px;
+  padding: 20px;
+}
+
+
+.pointer {
+  z-index: 0;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  background-color: red;
+}
+.arrow {
+  cursor: pointer;
+  position: fixed;
+  top: 0px;
+  
+  width: 0px;
+  height: 0px;
+  border-style: solid;
+  border-width: 25px 15px 0 15px;
+  border-color: #076591 transparent transparent transparent;
+  z-index: 300; 
+}
+.arrow.up {
+  border-color: transparent transparent #076591 transparent;
+  border-width: 0 15px 25px 15px;
+}
+
+.parallax {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  z-index: 100;
+}
+.parallax .element {
+  position: fixed;
+  background-color: #666;
+  height: 100px;
+  width: 200px;
+  text-align:center;
+  padding-top: 40px;
+  box-sizing:border-box;
+  opacity:0.2;
+  filter: alpha(opacity=20);
+  border-radius: 100px;
+  z-index: 50;
+  box-shadow: 5px 5px 2px #888888;
+}
