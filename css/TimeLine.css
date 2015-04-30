@@ -167,18 +167,19 @@ body{
   left: 20px;
   width: 0px;
   height: 0px;
-  border-style: solid;
   opacity: 0.7;
   z-index: 300; 
 }
 .arrow.down {
   border-width: 20px 15px 0 15px;
   border-color: #076591 transparent transparent transparent;
+  border-style: solid dotted none;
   top: 12px;  
 }
 .arrow.up {
   border-color: transparent transparent #076591 transparent;
   border-width: 0 15px 20px 15px;
+  border-style: solid dotted;
   top: 38px;
   display: none;
 }
