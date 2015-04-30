@@ -45,8 +45,15 @@ function TimeLine(obj){
 	this.drawStage = function(){
 		// set init pointer height & arrow position
   		$(".pointer").css("height",(this.propsObj.initPointerHeightNum-13)+"px");
-  		$(".arrow").css("top",(this.propsObj.initPointerHeightNum-25)+"px");
-  		$(".arrow").css("left",((this.propsObj.contentWidthNum-30)/2)+"px");
+
+  		// $(".arrow.down").css("top",(this.propsObj.initPointerHeightNum-25)+"px");
+  		// $(".arrow.down").css("left",((this.propsObj.contentWidthNum-30)/2)+"px");
+
+  		// $(".arrow.up").css("top",(this.propsObj.initPointerHeightNum+5)+"px");
+  		// $(".arrow.up").css("left",((this.propsObj.contentWidthNum-30)/2)+"px");
+
+  		$(".cycle").css("top",(this.propsObj.initPointerHeightNum-35)+"px");
+  		$(".cycle").css("left",((this.propsObj.contentWidthNum-70)/2)+"px");
   		// set init mark's position
   		$(".mark").css("margin-top",(this.propsObj.initPointerHeightNum)+"px");
 	};
@@ -130,12 +137,15 @@ function TimeLine(obj){
    		}
     };
 
-    this.setArrowDirection = function(){
-    	if(this.propsObj.arrowDownBln){
-	    	$(".arrow").removeClass("up");
-	    }else{
-	    	$(".arrow").addClass("up");
-	    }
+    this.manageControl = function(){
+    	//console.log('currentPanelId => '+ this.propsObj.currentPanelId);
+    	if(this.propsObj.currentPanelId == 0){
+    		$('.arrow.up').fadeOut(this.propsObj.transTimeNum/2);
+    	}else if(this.propsObj.currentPanelId == -1){
+    		$('.arrow.down').fadeOut(this.propsObj.transTimeNum/2);
+    	}else{
+    		$('.arrow.down, .arrow.up').show();
+    	}
     };
 
 
@@ -216,9 +226,10 @@ function TimeLine(obj){
     	this.propsObj.pointerNum = renderPointerNum;
 
     	if(this.propsObj.scrollBln){
-	      this.setArrowDirection();
+	      
 	      this.matainState();
 	      this.manageParallax();
+	      this.manageControl();
 	    }
     };
 
@@ -247,33 +258,50 @@ function TimeLine(obj){
 
     /* ACTION SECTION */
 
-    this.scrollNextStopDown = function(){
-    	var panelEq = this.propsObj.lastPanelEq;
+    this.scrollNextStop = function(){
+    	var panelEq;
     	if(this.propsObj.currentPanelId !== -1){
-    		panelEq = this.propsObj.currentPanelId+1;
+    		panelEq = this.propsObj.currentPanelId + 1;
+    	}else{
+    		panelEq = this.propsObj.lastPanelEq + 1;
     	}
 
-    	if (panelEq == this.propsObj.lastPanelEq){
-    		// disable downward arrow
-    	}else {
+    	if (panelEq <= this.propsObj.lastPanelEq){
     		$('html, body').stop().animate({'scrollTop': self.propsObj.triggerArr[panelEq]
-	    	}, 900, 'swing');
-    	} 
-    	//console.log("currentPanelId => "+this.propsObj.currentPanelId + "  || "+this.propsObj.triggerArr[panelEq]);
+	    	}, self.propsObj.transTimeNum, 'swing');
+    	}
+    };
+
+    this.scrollPreviusStop = function(){
+    	var panelEq;
+    	if(this.propsObj.currentPanelId == -1){
+    		panelEq = this.propsObj.lastPanelEq - 1;
+    	}else{
+    		panelEq = this.propsObj.currentPanelId - 1;
+    	}
+
+    	if (panelEq >= 0){
+    		$('html, body').stop().animate({'scrollTop': self.propsObj.triggerArr[panelEq]
+	    	}, self.propsObj.transTimeNum, 'swing');
+    	}
     };
 
 
     /* EVENTS SECTION */
 
     this.addEvents = function(){
-    	$(".arrow").bind("click", function(){
-    		self.scrollNextStopDown();
+    	$(".arrow.down").bind("click", function(){
+    		self.scrollNextStop();
+    	});
+    	$(".arrow.up").bind("click", function(){
+    		self.scrollPreviusStop();
     	});
     };
 
     this.removeEvents = function(){
     	$(window).unbind("scroll");
-    	$(".arrow").unbind("click");
+    	$(".arrow.down").unbind("click");
+    	$(".arrow.up").unbind("click");
     };
 
 
