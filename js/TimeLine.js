@@ -11,13 +11,14 @@ function TimeLine(obj){
 	/* PROPERTIES */
 
 	this.propsObj = {
-		arrowDownBln : true,
 		parllaxEleCountNum : 10,
 		parallaxNum : 0.7,
 		transTimeNum : 1000,
 		pointerNum : 0,
 		currentPanelId : 0,
 		parallaxOffsetNum : 50,
+		resizeTimeout : false,
+		resizeDelta : 200,
 		parallaxEleTopArr : [],
 		triggerArr : [],
 		stopHeightNum : undefined,
@@ -26,8 +27,10 @@ function TimeLine(obj){
 		initPointerHeightNum : undefined,
 		initScrollNum : undefined,
 		stopCountNum : undefined,
-		lastPanelEq : undefined
+		lastPanelEq : undefined,
+		compareTime : undefined
 	};
+
 
 
 	/* SET UP */
@@ -103,19 +106,6 @@ function TimeLine(obj){
   		//parallaxEle.style.webkitTransform = "translate(0,"+parallaxTop+"px)";
   	};
 
-
-	
-
-    /* ARROW DIRECTION SECTION */
-
-    this.getDirection = function(renderPointerNum){
-    	if(renderPointerNum < this.propsObj.pointerNum){
-      		this.propsObj.arrowDownBln = false;
-    	}else{
-      		this.propsObj.arrowDownBln = true;
-   		}
-    };
-
     this.manageControl = function(){
     	if(this.propsObj.currentPanelId == 0){
     		$('.arrow.up').fadeOut(this.propsObj.transTimeNum/2);
@@ -125,6 +115,7 @@ function TimeLine(obj){
     		$('.arrow.down, .arrow.up').show();
     	}
     };
+
 
 
     /* PANEL SECTION */
@@ -166,6 +157,7 @@ function TimeLine(obj){
   	};
 
 
+
   	/* ANIMATION SECTION */
     this.initInterval = function(){
     	// animate engine
@@ -187,8 +179,6 @@ function TimeLine(obj){
     this.renderFrame = function(){
     	var scrollTop = (window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;
     	var renderPointerNum = 	this.propsObj.initScrollNum + scrollTop;
-
-    	this.getDirection(renderPointerNum);
 		//update pointerNum
     	this.propsObj.pointerNum = renderPointerNum;
 		this.matainState();
@@ -197,10 +187,12 @@ function TimeLine(obj){
     };
 
 
+
     /*  UITIL */
     this.getRandomInt = function(min, max) {
 		return Math.floor(Math.random() * (max - min + 1)) + min;
     };
+
 
 
     /* INITILZATION */
@@ -216,6 +208,7 @@ function TimeLine(obj){
 		this.addEvents();
 		this.displayPanel(this.propsObj.currentPanelId);
     };
+
 
 
     /* ACTION SECTION */
@@ -249,6 +242,28 @@ function TimeLine(obj){
     };
 
 
+
+    /* REZIE BROWSER SECTION */
+
+    this.resizeEnd = function(){
+    	if (new Date() - this.propsObj.compareTime < this.propsObj.resizeDelta) {
+			setTimeout(self.resizeEnd, self.propsObj.resizeDelta);
+		} else {
+		    this.propsObj.resizeTimeout = false;
+		    self.reInit();
+		} 
+    };
+
+    this.reInit = function(){
+		this.propsObj.triggerArr = [];
+		$(".stop").css("height", $(window).height()+"px");
+		this.setProps();
+		this.drawStage();
+		this.setTriggers();
+    };
+
+
+
     /* EVENTS SECTION */
 
     this.addEvents = function(){
@@ -258,29 +273,13 @@ function TimeLine(obj){
     	$(".arrow.up").bind("click", function(){
     		self.scrollPreviusStop();
     	});
-
-
-
-    	var rtime = new Date(1, 1, 2000, 12,00,00);
-		var timeout = false;
-		var delta = 200;
 		$(window).resize(function() {
-		    rtime = new Date();
-		    if (timeout === false) {
-		        timeout = true;
-		        setTimeout(resizeend, delta);
+		    self.propsObj.compareTime = new Date();
+		    if (self.propsObj.resizeTimeout === false) {
+		        self.propsObj.resizeTimeout = true;
+		        setTimeout(self.resizeEnd, self.propsObj.resizeDelta);
 		    }
 		});
-
-		function resizeend() {
-		    if (new Date() - rtime < delta) {
-		        setTimeout(resizeend, delta);
-		    } else {
-		        timeout = false;
-		        //console.log('Done resizing');
-		        //self.resizingBrowser();
-		    }               
-		}
     };
 
     this.removeEvents = function(){
@@ -290,14 +289,13 @@ function TimeLine(obj){
 
 
 
-
-
     /* GARGABE COLLECTION SECTION */
 
     this.destory = function(){
         this.removeEvents();
         delete this;
     };
+
 
 
     /* CONSTRUCTOR */
