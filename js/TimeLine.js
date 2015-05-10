@@ -6,18 +6,18 @@ function TimeLine(obj){
 	var self = this;
 
 
+	var parallaxEle = document.querySelector('.parallax');
+
 	/* PROPERTIES */
 
 	this.propsObj = {
-		scrollBln : false,
 		arrowDownBln : true,
 		parllaxEleCountNum : 10,
-		parallaxNum : 0.9,
+		parallaxNum : 0.7,
 		transTimeNum : 1000,
 		pointerNum : 0,
 		currentPanelId : 0,
 		parallaxOffsetNum : 50,
-		debonceNum : 250,
 		parallaxEleTopArr : [],
 		triggerArr : [],
 		stopHeightNum : undefined,
@@ -45,12 +45,6 @@ function TimeLine(obj){
 	this.drawStage = function(){
 		// set init pointer height & arrow position
   		$(".pointer").css("height",(this.propsObj.initPointerHeightNum-13)+"px");
-
-  		// $(".arrow.down").css("top",(this.propsObj.initPointerHeightNum-25)+"px");
-  		// $(".arrow.down").css("left",((this.propsObj.contentWidthNum-30)/2)+"px");
-
-  		// $(".arrow.up").css("top",(this.propsObj.initPointerHeightNum+5)+"px");
-  		// $(".arrow.up").css("left",((this.propsObj.contentWidthNum-30)/2)+"px");
 
   		$(".cycle").css("top",(this.propsObj.initPointerHeightNum-35)+"px");
   		$(".cycle").css("left",((this.propsObj.contentWidthNum-70)/2)+"px");
@@ -99,31 +93,16 @@ function TimeLine(obj){
 	};
 
 	this.manageParallax = function(){
-  		// get scrollPercent over tatal content height
-    	var scrollPercent = (this.propsObj.pointerNum - this.propsObj.initPointerHeightNum) / (this.propsObj.contentHeightNum - this.propsObj.stopHeightNum);
-    
-	    // update all element y positon base on scrollPercent
-	    $(".parallax .element").each(function(){
-	    	var idStr = $(this).attr('id');
-	    	var obj = {
-	        			id : idStr,
-	        			scrollNum : scrollPercent
-	      			  };
-	      	self.updateParaElement(obj);
-	    });
+  		
+  		var scrollTop = this.propsObj.pointerNum;
+  		var fullHeight = this.propsObj.contentHeightNum;
+  		var initPointerHeightNum = this.propsObj.initPointerHeightNum;
+  		var parallaxTop =  0 - (scrollTop - initPointerHeightNum) * this.propsObj.parallaxNum;
+
+  		parallaxEle.style.top = parallaxTop+"px";
+  		//parallaxEle.style.webkitTransform = "translate(0,"+parallaxTop+"px)";
   	};
 
-  	this.updateParaElement = function(o){
-  		var idNum = parseInt((o.id).replace("ele_", ""));
-	    var pctNum = o.scrollNum;
-	    var paraTop = this.propsObj.parallaxEleTopArr[idNum];
-	    var mythNum = 0.6 + this.propsObj.parallaxEleTopArr.length/100;    
-	    
-	    var topNum = paraTop - (this.propsObj.contentHeightNum * pctNum * mythNum * this.propsObj.parallaxNum);
-		// this one reflect the real number of elementCountNum on the screen, however, there are jumping frame when scroll start    
-		//var topNum = Math.floor(this.propsObj.parallaxNum * (paraTop - (this.propsObj.contentHeightNum * pctNum * mythNum)));		    
-	    $("#ele_" + idNum).css("top", topNum + "px");
-  	};
 
 	
 
@@ -138,7 +117,6 @@ function TimeLine(obj){
     };
 
     this.manageControl = function(){
-    	//console.log('currentPanelId => '+ this.propsObj.currentPanelId);
     	if(this.propsObj.currentPanelId == 0){
     		$('.arrow.up').fadeOut(this.propsObj.transTimeNum/2);
     	}else if(this.propsObj.currentPanelId == -1){
@@ -206,17 +184,6 @@ function TimeLine(obj){
   		})();
     };
 
-    this.initIntervalClutch = function(){
-    	$(window).bind("scroll", function(){
-			this.propsObj.scrollBln = true;
-			clearTimeout($.data(this));
-			$.data(this, setTimeout(function() {
-				self.propsObj.scrollBln = false;
-		    	}, self.propsObj.debonceNum)
-			)
-		});
-    };
-
     this.renderFrame = function(){
     	var scrollTop = (window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;
     	var renderPointerNum = 	this.propsObj.initScrollNum + scrollTop;
@@ -224,13 +191,9 @@ function TimeLine(obj){
     	this.getDirection(renderPointerNum);
 		//update pointerNum
     	this.propsObj.pointerNum = renderPointerNum;
-
-    	if(this.propsObj.scrollBln){
-	      
-	      this.matainState();
-	      this.manageParallax();
-	      this.manageControl();
-	    }
+		this.matainState();
+	    this.manageParallax();
+	    this.manageControl();
     };
 
 
@@ -250,7 +213,6 @@ function TimeLine(obj){
 		this.setTriggers();
 		this.drawParallax();
 		this.initInterval();
-		this.initIntervalClutch();
 		this.addEvents();
 		this.displayPanel(this.propsObj.currentPanelId);
     };
@@ -296,13 +258,38 @@ function TimeLine(obj){
     	$(".arrow.up").bind("click", function(){
     		self.scrollPreviusStop();
     	});
+
+
+
+    	var rtime = new Date(1, 1, 2000, 12,00,00);
+		var timeout = false;
+		var delta = 200;
+		$(window).resize(function() {
+		    rtime = new Date();
+		    if (timeout === false) {
+		        timeout = true;
+		        setTimeout(resizeend, delta);
+		    }
+		});
+
+		function resizeend() {
+		    if (new Date() - rtime < delta) {
+		        setTimeout(resizeend, delta);
+		    } else {
+		        timeout = false;
+		        //console.log('Done resizing');
+		        //self.resizingBrowser();
+		    }               
+		}
     };
 
     this.removeEvents = function(){
-    	$(window).unbind("scroll");
     	$(".arrow.down").unbind("click");
     	$(".arrow.up").unbind("click");
     };
+
+
+
 
 
     /* GARGABE COLLECTION SECTION */

@@ -86,13 +86,14 @@ body{
 .even .left, .even .right {
   background-color: #999;
 }
-.right .info {
+
+.stop .info {
   position: fixed;
   height: 60%;
   width: 30%;
   right: 10%;
   top: 20%;
-  z-index:1350;
+  z-index:350;
   border-radius: 10px;
   background-color: #333;
   border: 5px dashed red;
@@ -103,6 +104,9 @@ body{
 
   padding: 20px;
   display: none;
+}
+.info .relative {
+  position: relative;
 }
 .info title {
   display: block;
@@ -195,7 +199,7 @@ body{
   z-index: 100;
 }
 .parallax .element {
-  position: fixed;
+  position: relative;
   background-color: #666;
   height: 100px;
   width: 200px;
