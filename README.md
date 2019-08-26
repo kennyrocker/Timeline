@@ -1,2 +1,2 @@
-# JS RESUME
+# RESUME
 My humble coding adventure
